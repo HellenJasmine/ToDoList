@@ -10,8 +10,8 @@ class Task_Form extends StatefulWidget {
 }
 
 class _TaskState extends State<Task_Form> {
-  DateTime _selectedDate = DateTime.now();
-  Category _selectedCategory  = Category.values.first;
+  DateTime? _selectedDate;
+  Category? _selectedCategory;
 
   final TextEditingController taskTitleTextEditingController = TextEditingController();
   final TextEditingController taskDescriptionTextEditingControler = TextEditingController();
@@ -157,15 +157,15 @@ class _TaskState extends State<Task_Form> {
               ),
               TextButton(
                 onPressed: () {
-                  if(taskDescriptionTextEditingControler.text.isNotEmpty && taskTitleTextEditingController.text.isNotEmpty){
+                  if(taskDescriptionTextEditingControler.text.isNotEmpty && taskTitleTextEditingController.text.isNotEmpty && _selectedDate != null && _selectedCategory != null){
 
-                  final Task newTask = Task(
-                    id: UniqueKey().toString(),
-                    title: taskTitleTextEditingController.text, 
-                    description: taskDescriptionTextEditingControler.text, 
-                    dueDate: _selectedDate, 
-                    category: _selectedCategory
-                  );
+                      final Task newTask = Task(
+                        id: UniqueKey().toString(),
+                        title: taskTitleTextEditingController.text, 
+                        description: taskDescriptionTextEditingControler.text, 
+                        dueDate: _selectedDate!, 
+                        category: _selectedCategory!
+                      );
               
                   Navigator.pop(context, newTask);
                   taskDescriptionTextEditingControler.clear();
