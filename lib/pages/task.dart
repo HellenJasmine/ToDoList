@@ -3,7 +3,9 @@ import '../models/task_model.dart';
 
 // ignore: camel_case_types
 class Task_Form extends StatefulWidget {
-  const Task_Form({super.key});
+  final Task? task;
+
+  const Task_Form({super.key, this.task});
 
   @override
   State<Task_Form> createState() => _TaskState();
@@ -31,6 +33,18 @@ class _TaskState extends State<Task_Form> {
       });
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+        if (widget.task != null) {
+      taskTitleTextEditingController.text = widget.task!.title;
+      taskDescriptionTextEditingControler.text = widget.task!.description;
+      _selectedDate = widget.task!.dueDate;
+      _selectedCategory = widget.task!.category;
+    } 
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -146,10 +160,14 @@ class _TaskState extends State<Task_Form> {
             children: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (widget.task == null) {
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pop("remover");
+                  }
                 },
                 child: Text(
-                  'Cancelar',
+                  widget.task == null ?'Cancelar': 'Remover',
                   style: TextStyle(
                     color: theme.primaryColor,
                   ),
@@ -157,7 +175,7 @@ class _TaskState extends State<Task_Form> {
               ),
               TextButton(
                 onPressed: () {
-                  if(taskDescriptionTextEditingControler.text.isNotEmpty && taskTitleTextEditingController.text.isNotEmpty && _selectedDate != null && _selectedCategory != null){
+                  if(widget.task == null && taskDescriptionTextEditingControler.text.isNotEmpty && taskTitleTextEditingController.text.isNotEmpty && _selectedDate != null && _selectedCategory != null){
 
                       final Task newTask = Task(
                         id: UniqueKey().toString(),
@@ -168,12 +186,21 @@ class _TaskState extends State<Task_Form> {
                       );
               
                   Navigator.pop(context, newTask);
-                  taskDescriptionTextEditingControler.clear();
-                  taskTitleTextEditingController.clear();
+      
+                  } else {
+                    final updatedTask = Task(
+                        id: widget.task!.id,
+                        title: taskTitleTextEditingController.text,
+                        description: taskDescriptionTextEditingControler.text,
+                        dueDate: _selectedDate!,
+                        category: _selectedCategory!,
+                        isCompleted: widget.task!.isCompleted,
+                      );
+                      Navigator.pop(context, updatedTask);
                   }
                 },
                 child: Text(
-                  'Adicionar',
+                  widget.task == null ? 'Adicionar' : 'Salvar Alterações',
                   style: TextStyle(
                     color: theme.primaryColor,
                   ),

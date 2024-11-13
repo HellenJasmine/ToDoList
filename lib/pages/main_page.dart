@@ -71,45 +71,67 @@ class _MainPageState extends State<MainPage> {
                       
                         final task = tasksList[index];
                       
-                        return ListTile(
-                          leading: Transform.scale(
-                            scale: 1.5,
-                            child: Checkbox(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)
+                        return TextButton(
+                          onPressed: () async{
+                            final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Task_Form(task: task)
                               ),
-                              value: task.isCompleted, 
-                              onChanged: (isCheked){
-                                setState(() {
-                                  
-                                  task.isCompleted = isCheked!;
-                                  
-                                });
-                              }
-                              ),
-                          ),
-                          title: Text(
-                            task.title, 
-                            style:TextStyle(
-                              color: task.isCompleted ? Colors.grey : Colors.black,
-                              decoration: task.isCompleted ? TextDecoration.lineThrough : TextDecoration.none 
-                            ) ,),
-                          subtitle: Text(task.description,
-                          style:TextStyle(
-                              color: task.isCompleted ? Colors.grey : Colors.black,
-                              decoration: task.isCompleted ? TextDecoration.lineThrough : TextDecoration.none 
-                            ) ,),
-                          trailing: IconButton(
-                            onPressed: (){
+                            );
+                            if(result == 'remover'){
                               setState(() {
                                 tasksList.remove(task);
-                              
                               });
-                            },
-                            icon:const Icon(
-                              Icons.delete, 
-                              color: Colors.redAccent,
-                              size: 30.0 ,
+                            }else if (result != null && result is Task){
+                              setState(() {
+                                final index = tasksList.indexOf(task);
+                                if(index != -1){
+                                  tasksList[index] = result;
+                                }
+                              });
+                            }
+                          },
+                          child: ListTile(
+                            leading: Transform.scale(
+                              scale: 1.5,
+                              child: Checkbox(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)
+                                ),
+                                value: task.isCompleted, 
+                                onChanged: (isCheked){
+                                  setState(() {
+                                    
+                                    task.isCompleted = isCheked!;
+                                    
+                                  });
+                                }
+                                ),
+                            ),
+                            title: Text(
+                              task.title, 
+                              style:TextStyle(
+                                color: task.isCompleted ? Colors.grey : Colors.black,
+                                decoration: task.isCompleted ? TextDecoration.lineThrough : TextDecoration.none 
+                              ) ,),
+                            subtitle: Text(task.description,
+                            style:TextStyle(
+                                color: task.isCompleted ? Colors.grey : Colors.black,
+                                decoration: task.isCompleted ? TextDecoration.lineThrough : TextDecoration.none 
+                              ) ,),
+                            trailing: IconButton(
+                              onPressed: (){
+                                setState(() {
+                                  tasksList.remove(task);
+                                
+                                });
+                              },
+                              icon:const Icon(
+                                Icons.delete, 
+                                color: Colors.redAccent,
+                                size: 30.0 ,
+                              ),
                             ),
                           ),
                         );
@@ -141,6 +163,7 @@ class _MainPageState extends State<MainPage> {
             context,
             MaterialPageRoute(builder: (context) => const Task_Form()),
           );
+          
           if(newTask != null && newTask is Task){
             setState(() {
               tasksList.add(newTask);
